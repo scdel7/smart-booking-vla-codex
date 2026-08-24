@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Reserva y consulta tus citas de forma rápida y segura.">
+  <title>Smart Booking &amp; Reminder Hub</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div class="background-glow background-glow--cyan" aria-hidden="true"></div>
+  <div class="background-glow background-glow--pink" aria-hidden="true"></div>
+
+  <main class="page-shell">
+    <header class="hero">
+      <p class="eyebrow">Smart Booking &amp; Reminder Hub</p>
+      <h1>Tu próxima cita,<br><span>simple y segura.</span></h1>
+      <p class="hero__description">
+        Reserva en minutos y utiliza tu código de seguimiento para consultar el estado cuando quieras.
+      </p>
+    </header>
+
+    <div class="cards-grid">
+      <section class="glass-card" aria-labelledby="booking-title">
+        <div class="card-heading">
+          <span class="card-number" aria-hidden="true">01</span>
+          <div>
+            <p class="card-kicker">Nueva solicitud</p>
+            <h2 id="booking-title">Reservar cita</h2>
+          </div>
+        </div>
+
+        <form id="booking-form" novalidate>
+          <div class="field-group">
+            <label for="nombre">Nombre completo</label>
+            <input id="nombre" name="nombre" type="text" autocomplete="name" required
+              placeholder="Ej. Ana Rodríguez">
+          </div>
+
+          <div class="field-group">
+            <label for="contacto">Correo o teléfono</label>
+            <input id="contacto" name="contacto" type="text" autocomplete="email" required
+              placeholder="Ej. ana@email.com">
+          </div>
+
+          <div class="field-group">
+            <label for="fecha_hora">Fecha y hora</label>
+            <input id="fecha_hora" name="fecha_hora" type="datetime-local" required>
+          </div>
+
+          <button class="primary-button" type="submit">
+            <span>Reservar cita</span>
+            <span aria-hidden="true">→</span>
+          </button>
+        </form>
+
+        <div id="booking-message" class="message" role="status" aria-live="polite" hidden></div>
+        <div id="booking-result" class="result-panel" hidden>
+          <p>Tu código de seguimiento</p>
+          <div class="code-row">
+            <strong id="tracking-code"></strong>
+            <button id="copy-code" class="copy-button" type="button" aria-label="Copiar código de seguimiento">
+              Copiar
+            </button>
+          </div>
+          <small>Guárdalo para consultar tu cita.</small>
+        </div>
+      </section>
+
+      <section class="glass-card" aria-labelledby="lookup-title">
+        <div class="card-heading">
+          <span class="card-number card-number--purple" aria-hidden="true">02</span>
+          <div>
+            <p class="card-kicker">Seguimiento</p>
+            <h2 id="lookup-title">Consultar mi cita</h2>
+          </div>
+        </div>
+
+        <form id="lookup-form" novalidate>
+          <div class="field-group">
+            <label for="codigo_seguimiento">Código de seguimiento</label>
+            <input id="codigo_seguimiento" name="codigo_seguimiento" type="text" required
+              autocomplete="off" spellcheck="false" placeholder="SOL-XXXXXXXX-XXXXXX">
+          </div>
+
+          <button class="primary-button primary-button--purple" type="submit">
+            <span>Consultar cita</span>
+            <span aria-hidden="true">⌕</span>
+          </button>
+        </form>
+
+        <div id="lookup-message" class="message" role="status" aria-live="polite" hidden></div>
+        <dl id="appointment-result" class="appointment-result" hidden>
+          <div><dt>Nombre</dt><dd id="result-name"></dd></div>
+          <div><dt>Contacto</dt><dd id="result-contact"></dd></div>
+          <div><dt>Fecha y hora</dt><dd id="result-date"></dd></div>
+          <div><dt>Estado</dt><dd><span id="result-status" class="status-pill"></span></dd></div>
+          <div class="appointment-result__code"><dt>Código</dt><dd id="result-code"></dd></div>
+        </dl>
+      </section>
+    </div>
+
+    <footer>
+      <span class="status-dot" aria-hidden="true"></span>
+      Servicio de reservas disponible
+    </footer>
+  </main>
+
+  <script src="/app.js" defer></script>
+</body>
+</html>

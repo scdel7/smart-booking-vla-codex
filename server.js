@@ -16,6 +16,7 @@ if (!supabaseUrl || !supabaseKey) {
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 app.use(express.json());
+app.use(express.static('public'));
 
 app.get('/health', (request, response) => {
   response.json({ status: 'ok' });
