@@ -57,6 +57,60 @@ app.post('/solicitudes', async (request, response) => {
   });
 });
 
+app.get('/solicitudes/:codigo', async (request, response) => {
+  const { codigo } = request.params;
+
+  const { data, error } = await supabase
+    .from('solicitudes')
+    .select('id, codigo_seguimiento, nombre, contacto, fecha_hora, estado, creado_en')
+    .eq('codigo_seguimiento', codigo)
+    .maybeSingle();
+
+  if (error) {
+    console.error('No se pudo consultar la solicitud:', error.message);
+    return response.status(500).json({
+      error: 'No se pudo consultar la solicitud.',
+    });
+  }
+
+  if (!data) {
+    return response.status(404).json({
+      error: 'Solicitud no encontrada.',
+    });
+  }
+
+  return response.json({ solicitud: data });
+});
+
+app.patch('/solicitudes/:codigo/confirmar', async (request, response) => {
+  const { codigo } = request.params;
+
+  const { data, error } = await supabase
+    .from('solicitudes')
+    .update({ estado: 'confirmada' })
+    .eq('codigo_seguimiento', codigo)
+    .select('id, codigo_seguimiento, nombre, contacto, fecha_hora, estado, creado_en')
+    .maybeSingle();
+
+  if (error) {
+    console.error('No se pudo confirmar la solicitud:', error.message);
+    return response.status(500).json({
+      error: 'No se pudo confirmar la solicitud.',
+    });
+  }
+
+  if (!data) {
+    return response.status(404).json({
+      error: 'Solicitud no encontrada.',
+    });
+  }
+
+  return response.json({
+    mensaje: 'Solicitud confirmada correctamente.',
+    solicitud: data,
+  });
+});
+
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
