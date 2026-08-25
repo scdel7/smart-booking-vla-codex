@@ -3,109 +3,95 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Reserva y consulta tus citas de forma rápida y segura.">
-  <title>Smart Booking &amp; Reminder Hub</title>
+  <meta name="description" content="Beatus: fisioterapia, rehabilitación, estética y bienestar con atención personalizada.">
+  <title>Beatus | Fisioterapia, Rehabilitación y Estética</title>
   <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-  <div class="background-glow background-glow--cyan" aria-hidden="true"></div>
-  <div class="background-glow background-glow--pink" aria-hidden="true"></div>
+  <header class="site-header">
+    <a class="brand" href="#inicio" aria-label="Ir al inicio de Beatus">
+      <img src="assets/images/beatus-logo.png" alt="Beatus - Fisioterapia, Rehabilitación y Estética">
+      <span><strong>BEATUS</strong><small>Fisioterapia · Rehabilitación · Estética</small></span>
+    </a>
+    <a class="header-cta" href="#reservar">Reservar cita</a>
+  </header>
 
   <main class="page-shell">
-    <header class="hero">
-      <p class="eyebrow">Smart Booking &amp; Reminder Hub</p>
-      <h1>Tu próxima cita,<br><span>simple y segura.</span></h1>
-      <p class="hero__description">
-        Reserva en minutos y utiliza tu código de seguimiento para consultar el estado cuando quieras.
-      </p>
-    </header>
+    <section id="inicio" class="beatus-hero">
+      <div>
+        <p class="eyebrow">Lic. Melanie Vidalón</p>
+        <h1>Recupera tu bienestar.<br><span>Vuelve a moverte.</span></h1>
+        <p class="hero__description">Atención personalizada en fisioterapia, rehabilitación, masajes y bienestar con la Lic. Melanie Vidalón.</p>
+        <a class="primary-button hero-button" href="#reservar">Reservar una cita <span aria-hidden="true">→</span></a>
+      </div>
+      <div class="logo-card">
+        <img src="assets/images/beatus-logo.png" alt="Beatus - Fisioterapia, Rehabilitación y Estética">
+        <p>Fisioterapia · Rehabilitación · Estética</p>
+        <strong>Lic. Melanie Vidalón</strong>
+      </div>
+    </section>
 
-    <div class="cards-grid">
-      <section class="glass-card" aria-labelledby="booking-title">
-        <div class="card-heading">
-          <span class="card-number" aria-hidden="true">01</span>
-          <div>
-            <p class="card-kicker">Nueva solicitud</p>
-            <h2 id="booking-title">Reservar cita</h2>
-          </div>
-        </div>
+    <section class="services-section" aria-labelledby="services-title">
+      <div class="section-heading">
+        <p class="eyebrow">Atención integral</p>
+        <h2 id="services-title">Servicios para tu bienestar</h2>
+      </div>
+      <div class="services-grid">
+        <article><span>01</span><h3>Fisioterapia y Rehabilitación</h3><p>Valoración, fisioterapia, rehabilitación y atención de lesiones deportivas.</p></article>
+        <article><span>02</span><h3>Tratamientos</h3><p>Presoterapia, retorno venoso, drenaje linfático manual y tratamiento reductivo.</p></article>
+        <article><span>03</span><h3>Masajes y Bienestar</h3><p>Masaje terapéutico, relajante, deportivo y reflexología.</p></article>
+        <article><span>04</span><h3>Estética</h3><p>Estética facial y cuidados personalizados para tu bienestar.</p></article>
+      </div>
+    </section>
 
-        <form id="booking-form" novalidate>
-          <div class="field-group">
-            <label for="nombre">Nombre completo</label>
-            <input id="nombre" name="nombre" type="text" autocomplete="name" required
-              placeholder="Ej. Ana Rodríguez">
-          </div>
+    <section class="booking-area" aria-labelledby="booking-area-title">
+      <div class="section-heading centered"><p class="eyebrow">Agenda y seguimiento</p><h2 id="booking-area-title">Tu bienestar comienza aquí</h2></div>
+      <div class="cards-grid">
+        <section id="reservar" class="glass-card" aria-labelledby="booking-title">
+          <div class="card-heading"><span class="card-number" aria-hidden="true">01</span><div><p class="card-kicker">Nueva solicitud</p><h2 id="booking-title">Reservar cita</h2></div></div>
+          <form id="booking-form" novalidate>
+            <div class="field-group"><label for="nombre">Nombre completo</label><input id="nombre" name="nombre" type="text" autocomplete="name" required placeholder="Ej. Ana Rodríguez"></div>
+            <div class="field-group"><label for="contacto">Correo o teléfono</label><input id="contacto" name="contacto" type="text" autocomplete="email" required placeholder="Ej. ana@email.com"></div>
+            <div class="field-group">
+              <label for="servicio">Tipo de servicio</label>
+              <select id="servicio" name="servicio" required>
+                <option value="" selected disabled>Selecciona un servicio</option>
+                <option>Valoración</option><option>Fisioterapia / Rehabilitación</option><option>Lesiones deportivas</option>
+                <option>Masaje terapéutico</option><option>Masaje relajante</option><option>Masaje deportivo</option>
+                <option>Drenaje linfático manual</option><option>Presoterapia / Retorno venoso</option><option>Tratamiento reductivo</option>
+                <option>Estética facial</option><option>Reflexología</option><option>Otro</option>
+              </select>
+              <small class="field-hint">Selección visual; todavía no se guarda en la base de datos.</small>
+            </div>
+            <div class="field-group"><label for="fecha_hora">Fecha y hora</label><input id="fecha_hora" name="fecha_hora" type="datetime-local" required></div>
+            <button class="primary-button" type="submit"><span>Reservar cita</span><span aria-hidden="true">→</span></button>
+          </form>
+          <div id="booking-message" class="message" role="status" aria-live="polite" hidden></div>
+          <div id="booking-result" class="result-panel" hidden><p>Tu código de seguimiento</p><div class="code-row"><strong id="tracking-code"></strong><button id="copy-code" class="copy-button" type="button" aria-label="Copiar código de seguimiento">Copiar</button></div><small>Guárdalo para consultar tu cita.</small></div>
+        </section>
 
-          <div class="field-group">
-            <label for="contacto">Correo o teléfono</label>
-            <input id="contacto" name="contacto" type="text" autocomplete="email" required
-              placeholder="Ej. ana@email.com">
-          </div>
+        <section class="glass-card" aria-labelledby="lookup-title">
+          <div class="card-heading"><span class="card-number card-number--purple" aria-hidden="true">02</span><div><p class="card-kicker">Seguimiento</p><h2 id="lookup-title">Consultar mi cita</h2></div></div>
+          <form id="lookup-form" novalidate>
+            <div class="field-group"><label for="codigo_seguimiento">Código de seguimiento</label><input id="codigo_seguimiento" name="codigo_seguimiento" type="text" required autocomplete="off" spellcheck="false" placeholder="SOL-XXXXXXXX-XXXXXX"></div>
+            <button class="primary-button" type="submit"><span>Consultar cita</span><span aria-hidden="true">⌕</span></button>
+          </form>
+          <div id="lookup-message" class="message" role="status" aria-live="polite" hidden></div>
+          <dl id="appointment-result" class="appointment-result" hidden>
+            <div><dt>Nombre</dt><dd id="result-name"></dd></div><div><dt>Contacto</dt><dd id="result-contact"></dd></div>
+            <div><dt>Fecha y hora</dt><dd id="result-date"></dd></div><div><dt>Estado</dt><dd><span id="result-status" class="status-pill"></span></dd></div>
+            <div class="appointment-result__code"><dt>Código</dt><dd id="result-code"></dd></div>
+          </dl>
+        </section>
+      </div>
+    </section>
 
-          <div class="field-group">
-            <label for="fecha_hora">Fecha y hora</label>
-            <input id="fecha_hora" name="fecha_hora" type="datetime-local" required>
-          </div>
-
-          <button class="primary-button" type="submit">
-            <span>Reservar cita</span>
-            <span aria-hidden="true">→</span>
-          </button>
-        </form>
-
-        <div id="booking-message" class="message" role="status" aria-live="polite" hidden></div>
-        <div id="booking-result" class="result-panel" hidden>
-          <p>Tu código de seguimiento</p>
-          <div class="code-row">
-            <strong id="tracking-code"></strong>
-            <button id="copy-code" class="copy-button" type="button" aria-label="Copiar código de seguimiento">
-              Copiar
-            </button>
-          </div>
-          <small>Guárdalo para consultar tu cita.</small>
-        </div>
-      </section>
-
-      <section class="glass-card" aria-labelledby="lookup-title">
-        <div class="card-heading">
-          <span class="card-number card-number--purple" aria-hidden="true">02</span>
-          <div>
-            <p class="card-kicker">Seguimiento</p>
-            <h2 id="lookup-title">Consultar mi cita</h2>
-          </div>
-        </div>
-
-        <form id="lookup-form" novalidate>
-          <div class="field-group">
-            <label for="codigo_seguimiento">Código de seguimiento</label>
-            <input id="codigo_seguimiento" name="codigo_seguimiento" type="text" required
-              autocomplete="off" spellcheck="false" placeholder="SOL-XXXXXXXX-XXXXXX">
-          </div>
-
-          <button class="primary-button primary-button--purple" type="submit">
-            <span>Consultar cita</span>
-            <span aria-hidden="true">⌕</span>
-          </button>
-        </form>
-
-        <div id="lookup-message" class="message" role="status" aria-live="polite" hidden></div>
-        <dl id="appointment-result" class="appointment-result" hidden>
-          <div><dt>Nombre</dt><dd id="result-name"></dd></div>
-          <div><dt>Contacto</dt><dd id="result-contact"></dd></div>
-          <div><dt>Fecha y hora</dt><dd id="result-date"></dd></div>
-          <div><dt>Estado</dt><dd><span id="result-status" class="status-pill"></span></dd></div>
-          <div class="appointment-result__code"><dt>Código</dt><dd id="result-code"></dd></div>
-        </dl>
-      </section>
-    </div>
-
-    <footer>
-      <span class="status-dot" aria-hidden="true"></span>
-      Servicio de reservas disponible
-    </footer>
+    <section class="contact-section" aria-labelledby="contact-title">
+      <div><p class="eyebrow">BEATUS</p><h2 id="contact-title">Fisioterapia · Rehabilitación · Estética</h2><p>Lic. Melanie Vidalón</p></div>
+      <address><div><span>WhatsApp</span><strong>8377-2862</strong></div><div><span>Ubicación</span><strong>Llorente de Tibás</strong></div></address>
+    </section>
   </main>
-
+  <footer class="site-footer">BEATUS · Lic. Melanie Vidalón</footer>
   <script src="/app.js" defer></script>
 </body>
 </html>
