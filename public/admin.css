@@ -1,0 +1,150 @@
+:root {
+  color-scheme: light;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: #193047;
+  background: #F5F9F7;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  background:
+    radial-gradient(circle at 10% 10%, rgba(46, 148, 87, 0.16), transparent 28rem),
+    radial-gradient(circle at 90% 85%, rgba(39, 101, 168, 0.15), transparent 30rem),
+    #F5F9F7;
+}
+
+button,
+input { font: inherit; }
+
+.admin-shell {
+  display: grid;
+  width: min(100% - 2rem, 64rem);
+  min-height: 100vh;
+  margin: 0 auto;
+  gap: 1.5rem;
+  align-content: center;
+  padding: 2rem 0;
+}
+
+.brand-panel,
+.access-card {
+  padding: clamp(1.5rem, 5vw, 3rem);
+  border-radius: 1.5rem;
+}
+
+.brand-panel {
+  background: linear-gradient(135deg, #2765A8 0%, #2E9457 100%);
+  color: #FFFFFF;
+  box-shadow: 0 1.5rem 4rem rgba(25, 48, 71, 0.16);
+}
+
+.brand-panel img {
+  width: 5rem;
+  height: 5rem;
+  border-radius: 1rem;
+  object-fit: cover;
+}
+
+.brand-name {
+  margin: 1.5rem 0 0.4rem;
+  font-size: 0.86rem;
+  font-weight: 900;
+  letter-spacing: 0.2em;
+}
+
+.brand-panel h1 {
+  max-width: 28rem;
+  margin: 0;
+  font-size: clamp(2rem, 8vw, 3.7rem);
+  line-height: 1.03;
+}
+
+.brand-panel > p:last-child { margin: 1.5rem 0 0; }
+
+.access-card {
+  border: 1px solid rgba(39, 101, 168, 0.14);
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 1.5rem 4rem rgba(25, 48, 71, 0.11);
+  backdrop-filter: blur(18px);
+}
+
+.eyebrow {
+  margin: 0 0 0.5rem;
+  color: #2E9457;
+  font-size: 0.76rem;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.access-card h2 {
+  margin: 0 0 1.5rem;
+  font-size: clamp(1.8rem, 7vw, 2.7rem);
+}
+
+.intro { color: #617181; line-height: 1.6; }
+
+form { display: grid; gap: 0.8rem; margin-top: 1.5rem; }
+label { font-size: 0.86rem; font-weight: 800; }
+
+input {
+  width: 100%;
+  min-height: 3.3rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid rgba(39, 101, 168, 0.3);
+  border-radius: 0.85rem;
+  outline: none;
+  color: #193047;
+  background: #FFFFFF;
+}
+
+input:focus-visible {
+  border-color: #2765A8;
+  box-shadow: 0 0 0 3px rgba(39, 101, 168, 0.18);
+}
+
+button {
+  min-height: 3.3rem;
+  padding: 0.85rem 1.1rem;
+  border: 0;
+  border-radius: 0.85rem;
+  background: linear-gradient(135deg, #2765A8 0%, #2E9457 100%);
+  color: #FFFFFF;
+  cursor: pointer;
+  font-weight: 850;
+}
+
+button:hover { filter: brightness(1.07); }
+button:disabled { cursor: wait; opacity: 0.65; }
+button:focus-visible,
+.home-link:focus-visible { outline: 3px solid #2765A8; outline-offset: 3px; }
+
+.secondary-button { width: 100%; margin-top: 1rem; background: #174A7E; }
+.success-mark { display: grid; width: 3.2rem; height: 3.2rem; place-items: center; border-radius: 50%; background: rgba(46, 148, 87, 0.14); color: #2E9457; font-size: 1.7rem; font-weight: 900; }
+.session-email { overflow-wrap: anywhere; color: #617181; }
+
+.message {
+  margin: 1.2rem 0 0;
+  padding: 0.9rem 1rem;
+  border-radius: 0.8rem;
+  background: #EEF5FA;
+  color: #174A7E;
+  line-height: 1.5;
+}
+
+.message--error { background: #fff0f2; color: #a51e38; }
+.home-link { display: inline-block; margin-top: 1.5rem; color: #2765A8; font-weight: 800; }
+[hidden] { display: none !important; }
+
+@media (min-width: 50rem) {
+  .admin-shell { grid-template-columns: 1fr 1fr; align-items: stretch; }
+  .brand-panel,
+  .access-card { display: flex; flex-direction: column; justify-content: center; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; }
+}

@@ -2,12 +2,14 @@ require('dotenv').config();
 
 const crypto = require('crypto');
 const express = require('express');
+const path = require('path');
 const { createClient } = require('@supabase/supabase-js');
 
 const app = express();
 const port = process.env.PORT || 3000;
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_KEY;
+const supabasePublicKey = process.env.SUPABASE_PUBLIC_KEY;
 const openWeatherApiKey = process.env.OPENWEATHER_API_KEY;
 
 if (!supabaseUrl || !supabaseKey) {
@@ -21,6 +23,51 @@ app.use(express.static('public'));
 
 app.get('/health', (request, response) => {
   response.json({ status: 'ok' });
+});
+
+app.get('/admin', (request, response) => {
+  response.sendFile(path.join(__dirname, 'public', 'admin.html'));
+});
+
+app.get('/auth-config', (request, response) => {
+  if (!supabasePublicKey) {
+    return response.status(503).json({
+      error: 'La autenticación todavía no está configurada.',
+    });
+  }
+
+  return response.json({
+    supabaseUrl,
+    supabasePublicKey,
+  });
+});
+
+app.get('/admin/session', async (request, response) => {
+  const authorization = request.get('authorization') || '';
+  const [type, accessToken] = authorization.split(' ');
+
+  if (type !== 'Bearer' || !accessToken) {
+    return response.status(401).json({
+      authenticated: false,
+      error: 'Debes iniciar sesión para acceder al panel.',
+    });
+  }
+
+  const { data, error } = await supabase.auth.getUser(accessToken);
+
+  if (error || !data.user) {
+    return response.status(401).json({
+      authenticated: false,
+      error: 'La sesión no es válida o ha expirado.',
+    });
+  }
+
+  return response.json({
+    authenticated: true,
+    user: {
+      email: data.user.email,
+    },
+  });
 });
 
 app.get('/clima', async (request, response) => {

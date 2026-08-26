@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Acceso al panel administrativo de Beatus.">
+  <title>Panel administrativo | Beatus</title>
+  <link rel="stylesheet" href="/admin.css">
+</head>
+<body>
+  <main class="admin-shell">
+    <section class="brand-panel" aria-labelledby="brand-title">
+      <img src="/assets/images/beatus-logo.png" alt="Beatus - Fisioterapia, Rehabilitación y Estética">
+      <p class="brand-name">BEATUS</p>
+      <h1 id="brand-title">Fisioterapia<br>Rehabilitación<br>Estética</h1>
+      <p>Lic. Melanie Vidalón</p>
+    </section>
+
+    <section class="access-card" aria-labelledby="admin-title">
+      <p class="eyebrow">Acceso privado</p>
+      <h2 id="admin-title">Panel administrativo</h2>
+
+      <div id="loading-view" class="state-view" role="status">
+        <p>Verificando sesión…</p>
+      </div>
+
+      <div id="login-view" class="state-view" hidden>
+        <p class="intro">Recibe un enlace seguro en tu correo para entrar sin contraseña.</p>
+        <form id="login-form">
+          <label for="email">Correo electrónico</label>
+          <input id="email" name="email" type="email" autocomplete="email" required placeholder="nombre@correo.com">
+          <button type="submit">Enviar enlace de acceso</button>
+        </form>
+      </div>
+
+      <div id="admin-view" class="state-view" hidden>
+        <div class="success-mark" aria-hidden="true">✓</div>
+        <h3>Sesión iniciada</h3>
+        <p>Accediste correctamente al panel administrativo de Beatus.</p>
+        <p class="session-email">Correo: <strong id="session-email"></strong></p>
+        <button id="logout-button" class="secondary-button" type="button">Cerrar sesión</button>
+      </div>
+
+      <p id="message" class="message" role="status" aria-live="polite" hidden></p>
+      <a class="home-link" href="/">← Volver al sitio de Beatus</a>
+    </section>
+  </main>
+
+  <script type="module" src="/admin.js"></script>
+</body>
+</html>
