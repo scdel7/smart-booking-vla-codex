@@ -11,6 +11,7 @@ const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_KEY;
 const supabasePublicKey = process.env.SUPABASE_PUBLIC_KEY;
 const openWeatherApiKey = process.env.OPENWEATHER_API_KEY;
+const resendApiKey = process.env.RESEND_API_KEY;
 
 if (!supabaseUrl || !supabaseKey) {
   throw new Error('SUPABASE_URL y SUPABASE_KEY deben estar definidas.');
@@ -40,6 +41,54 @@ async function requireAuthenticatedUser(request, response, next) {
 
   request.authUser = data.user;
   return next();
+}
+
+function extractEmail(contact) {
+  if (typeof contact !== 'string') return null;
+  const match = contact.match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i);
+  return match ? match[0] : null;
+}
+
+async function sendConfirmationEmail(solicitud, recipientEmail) {
+  if (!resendApiKey) {
+    console.error('No se envió el correo de confirmación: RESEND_API_KEY no está configurada.');
+    return false;
+  }
+
+  const emailResponse = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${resendApiKey}`,
+      'Content-Type': 'application/json',
+      'Idempotency-Key': `beatus-confirmacion-${solicitud.codigo_seguimiento}`,
+    },
+    body: JSON.stringify({
+      from: 'Beatus <onboarding@resend.dev>',
+      to: [recipientEmail],
+      subject: 'Tu cita en Beatus ha sido confirmada',
+      text: [
+        `Hola ${solicitud.nombre},`,
+        '',
+        'Tu cita en Beatus con la Lic. Melanie Vidalón ha sido confirmada.',
+        '',
+        'Fecha y hora:',
+        solicitud.fecha_hora,
+        '',
+        'Código de seguimiento:',
+        solicitud.codigo_seguimiento,
+        '',
+        'BEATUS',
+        'Fisioterapia · Rehabilitación · Estética',
+      ].join('\n'),
+    }),
+  });
+
+  if (!emailResponse.ok) {
+    console.error(`No se envió el correo de confirmación: Resend respondió HTTP ${emailResponse.status}.`);
+    return false;
+  }
+
+  return true;
 }
 
 app.use(express.json());
@@ -242,10 +291,36 @@ app.get('/solicitudes/:codigo', async (request, response) => {
 app.patch('/solicitudes/:codigo/confirmar', async (request, response) => {
   const { codigo } = request.params;
 
+  const { data: solicitud, error: lookupError } = await supabase
+    .from('solicitudes')
+    .select('id, codigo_seguimiento, nombre, contacto, fecha_hora, estado, creado_en')
+    .eq('codigo_seguimiento', codigo)
+    .maybeSingle();
+
+  if (lookupError) {
+    console.error('No se pudo consultar la solicitud para confirmarla:', lookupError.message);
+    return response.status(500).json({
+      error: 'No se pudo confirmar la solicitud.',
+    });
+  }
+
+  if (!solicitud) {
+    return response.status(404).json({
+      error: 'Solicitud no encontrada.',
+    });
+  }
+
+  if (solicitud.estado !== 'pendiente') {
+    return response.status(409).json({
+      error: 'Solo una solicitud pendiente puede confirmarse.',
+    });
+  }
+
   const { data, error } = await supabase
     .from('solicitudes')
     .update({ estado: 'confirmada' })
     .eq('codigo_seguimiento', codigo)
+    .eq('estado', 'pendiente')
     .select('id, codigo_seguimiento, nombre, contacto, fecha_hora, estado, creado_en')
     .maybeSingle();
 
@@ -257,14 +332,34 @@ app.patch('/solicitudes/:codigo/confirmar', async (request, response) => {
   }
 
   if (!data) {
-    return response.status(404).json({
-      error: 'Solicitud no encontrada.',
+    return response.status(409).json({
+      error: 'La solicitud cambió y ya no puede confirmarse.',
     });
+  }
+
+  const recipientEmail = extractEmail(data.contacto);
+  let emailSent = false;
+
+  if (recipientEmail) {
+    try {
+      emailSent = await sendConfirmationEmail(data, recipientEmail);
+    } catch (emailError) {
+      console.error('No se envió el correo de confirmación por un error de conexión.');
+    }
   }
 
   return response.json({
     mensaje: 'Solicitud confirmada correctamente.',
     solicitud: data,
+    correo: {
+      intentado: Boolean(recipientEmail),
+      enviado: emailSent,
+      mensaje: !recipientEmail
+        ? 'No se intentó enviar correo porque el contacto no contiene un email válido.'
+        : emailSent
+          ? 'Correo de confirmación enviado correctamente.'
+          : 'La cita fue confirmada, pero el correo no pudo enviarse.',
+    },
   });
 });
 
