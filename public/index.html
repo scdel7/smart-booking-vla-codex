@@ -64,6 +64,17 @@
               <small class="field-hint">Selección visual; todavía no se guarda en la base de datos.</small>
             </div>
             <div class="field-group"><label for="fecha_hora">Fecha y hora</label><input id="fecha_hora" name="fecha_hora" type="datetime-local" required></div>
+            <section id="weather-card" class="weather-card" aria-labelledby="weather-title" aria-live="polite" hidden>
+              <div class="weather-card__heading">
+                <span id="weather-icon" class="weather-card__icon" aria-hidden="true">☀️</span>
+                <div><h3 id="weather-title">Clima estimado para tu cita</h3><p id="weather-location"></p></div>
+              </div>
+              <div id="weather-details" class="weather-card__details">
+                <strong id="weather-temperature"></strong>
+                <div><span id="weather-range"></span><span id="weather-description"></span></div>
+              </div>
+              <p id="weather-message" class="weather-card__message" hidden></p>
+            </section>
             <button class="primary-button" type="submit"><span>Reservar cita</span><span aria-hidden="true">→</span></button>
           </form>
           <div id="booking-message" class="message" role="status" aria-live="polite" hidden></div>

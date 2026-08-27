@@ -576,6 +576,43 @@ select:focus-visible { border-color: #2765A8; box-shadow: 0 0 0 3px rgba(39, 101
 .field-hint { color: #617181; font-size: 0.74rem; }
 .primary-button { color: #FFFFFF; box-shadow: 0 0.8rem 2.2rem rgba(39, 101, 168, 0.2); }
 
+.weather-card {
+  display: grid;
+  gap: 1rem;
+  padding: 1rem;
+  border: 1px solid rgba(39, 101, 168, 0.18);
+  border-radius: 1rem;
+  background: linear-gradient(135deg, #EEF5FA 0%, rgba(237, 248, 240, 0.9) 100%);
+  color: #193047;
+}
+
+.weather-card__heading {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.weather-card__icon {
+  display: grid;
+  width: 2.8rem;
+  height: 2.8rem;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 0.8rem;
+  background: #FFFFFF;
+  box-shadow: 0 0.5rem 1.2rem rgba(39, 101, 168, 0.1);
+  font-size: 1.35rem;
+}
+
+.weather-card h3 { margin: 0; color: #174A7E; font-size: 0.92rem; }
+.weather-card__heading p { margin: 0.2rem 0 0; color: #617181; font-size: 0.78rem; }
+.weather-card__details { display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 1rem; }
+.weather-card__details > strong { color: #2765A8; font-size: 1.8rem; line-height: 1; }
+.weather-card__details > div { display: grid; gap: 0.2rem; color: #617181; font-size: 0.78rem; }
+#weather-description { color: #2E9457; font-weight: 800; text-transform: capitalize; }
+.weather-card__message { margin: 0; color: #617181; font-size: 0.82rem; line-height: 1.5; }
+.weather-card[aria-busy="true"] { opacity: 0.78; }
+
 .primary-button:focus-visible,
 .copy-button:focus-visible,
 .header-cta:focus-visible,

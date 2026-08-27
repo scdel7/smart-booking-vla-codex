@@ -6,6 +6,17 @@ const bookingResult = document.querySelector('#booking-result');
 const appointmentResult = document.querySelector('#appointment-result');
 const trackingCode = document.querySelector('#tracking-code');
 const copyCodeButton = document.querySelector('#copy-code');
+const dateTimeInput = document.querySelector('#fecha_hora');
+const weatherCard = document.querySelector('#weather-card');
+const weatherIcon = document.querySelector('#weather-icon');
+const weatherLocation = document.querySelector('#weather-location');
+const weatherDetails = document.querySelector('#weather-details');
+const weatherTemperature = document.querySelector('#weather-temperature');
+const weatherRange = document.querySelector('#weather-range');
+const weatherDescription = document.querySelector('#weather-description');
+const weatherMessage = document.querySelector('#weather-message');
+
+let weatherRequest;
 
 function showMessage(element, message, type = 'error') {
   element.textContent = message;
@@ -24,6 +35,77 @@ function setLoading(form, loading) {
   button.disabled = loading;
   button.setAttribute('aria-busy', String(loading));
 }
+
+function getWeatherIcon(description) {
+  const normalizedDescription = description.toLowerCase();
+  if (normalizedDescription.includes('lluv') || normalizedDescription.includes('torment')) return '🌧️';
+  if (normalizedDescription.includes('nub')) return '☁️';
+  return '☀️';
+}
+
+function showWeatherMessage(message) {
+  weatherCard.hidden = false;
+  weatherCard.removeAttribute('aria-busy');
+  weatherDetails.hidden = true;
+  weatherLocation.textContent = '';
+  weatherMessage.textContent = message;
+  weatherMessage.hidden = false;
+  weatherIcon.textContent = '☁️';
+}
+
+function clearWeather() {
+  if (weatherRequest) weatherRequest.abort();
+  weatherCard.hidden = true;
+  weatherCard.removeAttribute('aria-busy');
+  weatherMessage.hidden = true;
+  weatherDetails.hidden = false;
+}
+
+async function loadWeather(date) {
+  if (weatherRequest) weatherRequest.abort();
+  weatherRequest = new AbortController();
+  weatherCard.hidden = false;
+  weatherCard.setAttribute('aria-busy', 'true');
+  weatherDetails.hidden = true;
+  weatherMessage.textContent = 'Consultando el pronóstico…';
+  weatherMessage.hidden = false;
+  weatherLocation.textContent = '';
+
+  try {
+    const response = await fetch(`/clima?fecha=${encodeURIComponent(date)}`, {
+      signal: weatherRequest.signal,
+    });
+    const result = await response.json();
+
+    if (response.status === 400) {
+      showWeatherMessage('El pronóstico todavía no está disponible para esta fecha.');
+      return;
+    }
+
+    if (!response.ok) {
+      throw new Error('Weather request failed');
+    }
+
+    weatherIcon.textContent = getWeatherIcon(result.descripcion);
+    weatherLocation.textContent = result.ubicacion;
+    weatherTemperature.textContent = `${result.temperatura} °C`;
+    weatherRange.textContent = `Mín. ${result.minima} °C · Máx. ${result.maxima} °C`;
+    weatherDescription.textContent = result.descripcion;
+    weatherMessage.hidden = true;
+    weatherDetails.hidden = false;
+    weatherCard.removeAttribute('aria-busy');
+  } catch (error) {
+    if (error.name !== 'AbortError') {
+      showWeatherMessage('No pudimos consultar el clima en este momento.');
+    }
+  }
+}
+
+dateTimeInput.addEventListener('change', () => {
+  const date = dateTimeInput.value.split('T')[0];
+  if (date) loadWeather(date);
+  else clearWeather();
+});
 
 bookingForm.addEventListener('submit', async (event) => {
   event.preventDefault();
@@ -61,6 +143,7 @@ bookingForm.addEventListener('submit', async (event) => {
     bookingResult.hidden = false;
     showMessage(bookingMessage, '¡Tu cita fue reservada correctamente!', 'success');
     bookingForm.reset();
+    clearWeather();
   } catch (error) {
     showMessage(bookingMessage, error.message || 'No fue posible reservar la cita. Inténtalo nuevamente.');
   } finally {
