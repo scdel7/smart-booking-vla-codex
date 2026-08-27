@@ -18,6 +18,30 @@ if (!supabaseUrl || !supabaseKey) {
 
 const supabase = createClient(supabaseUrl, supabaseKey);
 
+async function requireAuthenticatedUser(request, response, next) {
+  const authorization = request.get('authorization') || '';
+  const [type, accessToken] = authorization.split(' ');
+
+  if (type !== 'Bearer' || !accessToken) {
+    return response.status(401).json({
+      authenticated: false,
+      error: 'Debes iniciar sesión para acceder al panel.',
+    });
+  }
+
+  const { data, error } = await supabase.auth.getUser(accessToken);
+
+  if (error || !data.user) {
+    return response.status(401).json({
+      authenticated: false,
+      error: 'La sesión no es válida o ha expirado.',
+    });
+  }
+
+  request.authUser = data.user;
+  return next();
+}
+
 app.use(express.json());
 app.use(express.static('public'));
 
@@ -42,32 +66,29 @@ app.get('/auth-config', (request, response) => {
   });
 });
 
-app.get('/admin/session', async (request, response) => {
-  const authorization = request.get('authorization') || '';
-  const [type, accessToken] = authorization.split(' ');
-
-  if (type !== 'Bearer' || !accessToken) {
-    return response.status(401).json({
-      authenticated: false,
-      error: 'Debes iniciar sesión para acceder al panel.',
-    });
-  }
-
-  const { data, error } = await supabase.auth.getUser(accessToken);
-
-  if (error || !data.user) {
-    return response.status(401).json({
-      authenticated: false,
-      error: 'La sesión no es válida o ha expirado.',
-    });
-  }
-
+app.get('/admin/session', requireAuthenticatedUser, (request, response) => {
   return response.json({
     authenticated: true,
     user: {
-      email: data.user.email,
+      email: request.authUser.email,
     },
   });
+});
+
+app.get('/admin/solicitudes', requireAuthenticatedUser, async (request, response) => {
+  const { data, error } = await supabase
+    .from('solicitudes')
+    .select('*')
+    .order('fecha_hora', { ascending: true });
+
+  if (error) {
+    console.error('No se pudieron listar las solicitudes:', error.message);
+    return response.status(500).json({
+      error: 'No se pudieron cargar las solicitudes.',
+    });
+  }
+
+  return response.json({ solicitudes: data });
 });
 
 app.get('/clima', async (request, response) => {
@@ -243,6 +264,76 @@ app.patch('/solicitudes/:codigo/confirmar', async (request, response) => {
 
   return response.json({
     mensaje: 'Solicitud confirmada correctamente.',
+    solicitud: data,
+  });
+});
+
+app.patch('/solicitudes/:codigo/no-show', requireAuthenticatedUser, async (request, response) => {
+  const { codigo } = request.params;
+
+  const { data: solicitud, error: lookupError } = await supabase
+    .from('solicitudes')
+    .select('*')
+    .eq('codigo_seguimiento', codigo)
+    .maybeSingle();
+
+  if (lookupError) {
+    console.error('No se pudo consultar la solicitud para no-show:', lookupError.message);
+    return response.status(500).json({
+      error: 'No se pudo consultar la solicitud.',
+    });
+  }
+
+  if (!solicitud) {
+    return response.status(404).json({
+      error: 'Solicitud no encontrada.',
+    });
+  }
+
+  if (solicitud.estado !== 'confirmada') {
+    return response.status(409).json({
+      error: 'Solo una solicitud confirmada puede marcarse como no-show.',
+    });
+  }
+
+  const appointmentTime = new Date(solicitud.fecha_hora);
+
+  if (Number.isNaN(appointmentTime.getTime())) {
+    return response.status(422).json({
+      error: 'La solicitud no tiene una fecha y hora válida.',
+    });
+  }
+
+  if (appointmentTime.getTime() >= Date.now()) {
+    return response.status(400).json({
+      error: 'No se puede marcar no-show antes de que pase la fecha de la cita.',
+    });
+  }
+
+  const { data, error } = await supabase
+    .from('solicitudes')
+    .update({ estado: 'no-show' })
+    .eq('codigo_seguimiento', codigo)
+    .eq('estado', 'confirmada')
+    .lt('fecha_hora', new Date().toISOString())
+    .select('*')
+    .maybeSingle();
+
+  if (error) {
+    console.error('No se pudo marcar la solicitud como no-show:', error.message);
+    return response.status(500).json({
+      error: 'No se pudo marcar la solicitud como no-show.',
+    });
+  }
+
+  if (!data) {
+    return response.status(409).json({
+      error: 'La solicitud cambió y ya no puede marcarse como no-show.',
+    });
+  }
+
+  return response.json({
+    mensaje: 'Solicitud marcada como no-show correctamente.',
     solicitud: data,
   });
 });

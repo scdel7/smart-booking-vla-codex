@@ -139,10 +139,122 @@ button:focus-visible,
 .home-link { display: inline-block; margin-top: 1.5rem; color: #2765A8; font-weight: 800; }
 [hidden] { display: none !important; }
 
+.admin-shell--dashboard {
+  display: block;
+  width: min(100% - 2rem, 76rem);
+}
+
+.dashboard {
+  padding: clamp(1.2rem, 4vw, 2.5rem);
+  border: 1px solid rgba(39, 101, 168, 0.14);
+  border-radius: 1.5rem;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 1.5rem 4rem rgba(25, 48, 71, 0.11);
+  backdrop-filter: blur(18px);
+}
+
+.dashboard-header {
+  display: grid;
+  gap: 1.25rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid rgba(39, 101, 168, 0.14);
+}
+
+.dashboard-header h1 {
+  margin: 0;
+  font-size: clamp(2rem, 7vw, 3.4rem);
+  line-height: 1.05;
+}
+
+.dashboard-header p { margin: 0.45rem 0 0; }
+.dashboard-header .brand-name { color: #2E9457; }
+.dashboard-header__actions { display: grid; gap: 0.7rem; align-content: center; }
+.dashboard-header__actions button { width: 100%; margin: 0; }
+.logout-button { background: #617181; }
+
+.dashboard-toolbar {
+  display: grid;
+  gap: 0.8rem;
+  align-items: center;
+  margin: 1.5rem 0;
+}
+
+.dashboard-toolbar > div { color: #617181; }
+.dashboard-toolbar strong { color: #193047; font-size: 1.5rem; }
+.dashboard-toolbar .message { margin: 0; }
+
+.appointments-state {
+  padding: 2rem;
+  border-radius: 1rem;
+  background: #EEF5FA;
+  color: #617181;
+  text-align: center;
+}
+
+.appointments-list { display: grid; gap: 1rem; }
+
+.appointment-card {
+  display: grid;
+  gap: 1rem;
+  padding: 1.15rem;
+  border: 1px solid rgba(39, 101, 168, 0.14);
+  border-radius: 1rem;
+  background: #FFFFFF;
+  box-shadow: 0 0.7rem 1.8rem rgba(25, 48, 71, 0.06);
+}
+
+.appointment-card__heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.8rem;
+}
+
+.appointment-card h2 { margin: 0; font-size: 1.1rem; }
+.appointment-card dl { display: grid; gap: 0.85rem; margin: 0; }
+.appointment-card dl > div { min-width: 0; }
+.appointment-card dt { margin-bottom: 0.18rem; color: #617181; font-size: 0.72rem; font-weight: 850; letter-spacing: 0.06em; text-transform: uppercase; }
+.appointment-card dd { margin: 0; overflow-wrap: anywhere; }
+
+.status-badge {
+  flex: 0 0 auto;
+  padding: 0.35rem 0.65rem;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 900;
+  text-transform: capitalize;
+}
+
+.status-badge[data-status="pendiente"] { color: #E6A23C; background: #fff8e8; }
+.status-badge[data-status="confirmada"] { color: #2765A8; background: #EEF5FA; }
+.status-badge[data-status="atendida"] { color: #2E9457; background: #edf8f0; }
+.status-badge[data-status="no-show"] { color: #D64545; background: #fff0f0; }
+.status-badge[data-status="cancelada"] { color: #617181; background: #f1f3f4; }
+
+.appointment-card__actions {
+  display: grid;
+  gap: 0.6rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid rgba(39, 101, 168, 0.12);
+}
+
+.appointment-card__actions button { width: 100%; }
+.no-show-button { background: #D64545; }
+.future-note { margin: 0; color: #617181; font-size: 0.78rem; line-height: 1.45; }
+
 @media (min-width: 50rem) {
   .admin-shell { grid-template-columns: 1fr 1fr; align-items: stretch; }
   .brand-panel,
   .access-card { display: flex; flex-direction: column; justify-content: center; }
+
+  .admin-shell--dashboard { display: block; }
+  .dashboard-header { grid-template-columns: 1fr auto; align-items: center; }
+  .dashboard-header__actions { grid-template-columns: repeat(2, auto); }
+  .dashboard-header__actions button { width: auto; }
+  .dashboard-toolbar { grid-template-columns: auto 1fr; }
+  .appointments-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .appointment-card dl { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 @media (prefers-reduced-motion: reduce) {

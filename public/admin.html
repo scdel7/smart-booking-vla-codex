@@ -8,15 +8,15 @@
   <link rel="stylesheet" href="/admin.css">
 </head>
 <body>
-  <main class="admin-shell">
-    <section class="brand-panel" aria-labelledby="brand-title">
+  <main id="admin-shell" class="admin-shell">
+    <section id="brand-panel" class="brand-panel" aria-labelledby="brand-title">
       <img src="/assets/images/beatus-logo.png" alt="Beatus - Fisioterapia, Rehabilitación y Estética">
       <p class="brand-name">BEATUS</p>
       <h1 id="brand-title">Fisioterapia<br>Rehabilitación<br>Estética</h1>
       <p>Lic. Melanie Vidalón</p>
     </section>
 
-    <section class="access-card" aria-labelledby="admin-title">
+    <section id="access-card" class="access-card" aria-labelledby="admin-title">
       <p class="eyebrow">Acceso privado</p>
       <h2 id="admin-title">Panel administrativo</h2>
 
@@ -33,16 +33,32 @@
         </form>
       </div>
 
-      <div id="admin-view" class="state-view" hidden>
-        <div class="success-mark" aria-hidden="true">✓</div>
-        <h3>Sesión iniciada</h3>
-        <p>Accediste correctamente al panel administrativo de Beatus.</p>
-        <p class="session-email">Correo: <strong id="session-email"></strong></p>
-        <button id="logout-button" class="secondary-button" type="button">Cerrar sesión</button>
-      </div>
-
       <p id="message" class="message" role="status" aria-live="polite" hidden></p>
       <a class="home-link" href="/">← Volver al sitio de Beatus</a>
+    </section>
+
+    <section id="admin-view" class="dashboard" aria-labelledby="dashboard-title" hidden>
+      <header class="dashboard-header">
+        <div>
+          <p class="brand-name">BEATUS</p>
+          <h1 id="dashboard-title">Panel administrativo</h1>
+          <p>Lic. Melanie Vidalón</p>
+          <p class="session-email">Sesión: <strong id="session-email"></strong></p>
+        </div>
+        <div class="dashboard-header__actions">
+          <button id="refresh-button" class="secondary-button" type="button">Actualizar lista</button>
+          <button id="logout-button" class="logout-button" type="button">Cerrar sesión</button>
+        </div>
+      </header>
+
+      <div class="dashboard-toolbar">
+        <div><strong id="appointments-count">0</strong><span> solicitudes</span></div>
+        <p id="panel-message" class="message" role="status" aria-live="polite" hidden></p>
+      </div>
+
+      <div id="appointments-loading" class="appointments-state" role="status">Cargando solicitudes…</div>
+      <div id="appointments-empty" class="appointments-state" hidden>No hay solicitudes registradas todavía.</div>
+      <div id="appointments-list" class="appointments-list" aria-live="polite"></div>
     </section>
   </main>
 
